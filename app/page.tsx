@@ -1,3 +1,5 @@
+import ActionButton from "@/components/ui/ActionButton";
+import PlayButton from "@/components/ui/PlayButton";
 import Image from "next/image";
 
 export default function Home() {
@@ -9,7 +11,7 @@ export default function Home() {
         <div className="player-level-bg size-18 flex items-center justify-center z-10">
           <span className="text-xl text-black">{playerLevel}</span>
         </div>
-        <div className="-translate-x-9 bg-tertiary border-6 border-border pl-10 pr-4 py-1">
+        <div className="-translate-x-9 bg-tertiary border-6 border-border pl-10 pr-4 py-1 rounded">
           <span className="text-2xl">{username}</span>
         </div>
       </div>
@@ -42,16 +44,10 @@ export default function Home() {
 
         <div className="flex-1 flex flex-col justify-center items-center">
           <img src="maze-logo.svg" alt="Maze Logo" className="w-70" />
-          <button className=" bg-secondary text-white text-3xl w-full max-w-sm px-6 py-2 border-border border-6 mt-10 cursor-pointer">
-            Play
-          </button>
+          <PlayButton className="w-full max-w-sm">Play</PlayButton>
           <div className="flex space-x-4 w-full max-w-sm mt-5">
-            <button className="flex-1 bg-tertiary text-white text-2xl px-6 py-2 cursor-pointer">
-              Create
-            </button>
-            <button className="flex-1 bg-tertiary text-white text-2xl px-6 py-2 cursor-pointer">
-              Join
-            </button>
+            <ActionButton className="flex-1">Create</ActionButton>
+            <ActionButton className="flex-1">Join</ActionButton>
           </div>
         </div>
       </div>
