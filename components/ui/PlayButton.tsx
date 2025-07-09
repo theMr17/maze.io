@@ -17,7 +17,7 @@ const PlayButton: React.FC<PlayButtonProps> = ({
     <button
       type={type}
       onClick={onClick}
-      className={`px-6 py-2 rounded bg-secondary text-secondary-foreground text-3xl border-border border-6 mt-10 cursor-pointer hover:bg-secondary-variant ${className}`}
+      className={`px-6 py-2 rounded bg-secondary text-secondary-foreground text-3xl border-border border-6 mt-10 cursor-pointer hover:brightness-110 ${className}`}
     >
       {children}
     </button>
