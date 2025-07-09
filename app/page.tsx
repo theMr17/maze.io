@@ -1,6 +1,5 @@
-import ActionButton from "@/components/ui/ActionButton";
-import PlayButton from "@/components/ui/PlayButton";
-import Image from "next/image";
+import ActionButton from "@/components/ActionButton";
+import PlayButton from "@/components/PlayButton";
 
 export default function Home() {
   const username = "Player1";
