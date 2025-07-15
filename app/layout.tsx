@@ -19,7 +19,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={galindo.className}>
-      <body>{children}</body>
+      <body>
+        {children}
+        <div id="modal-container" />
+      </body>
     </html>
   );
 }

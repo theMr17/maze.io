@@ -1,10 +1,17 @@
+"use client";
+
 import ActionButton from "@/components/button/ActionButton";
 import PlayButton from "@/components/button/PlayButton";
 import CollapsibleSettings from "@/components/CollapsibleSettings";
+import LoginModal from "@/components/modal/LoginModal";
+import { useState } from "react";
 
 export default function Home() {
   const username = "Player1";
   const playerLevel = 53;
+
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+
   return (
     <div className="maze-pattern-bg h-screen flex items-center justify-center">
       <div className="absolute left-10 top-4 right-10 flex justify-between items-center">
@@ -17,7 +24,11 @@ export default function Home() {
           </div>
         </div>
 
-        <ActionButton className="bg-primary-variant" variant="light">
+        <ActionButton
+          className="bg-primary-variant"
+          variant="light"
+          onClick={() => setIsLoginModalOpen(true)}
+        >
           Log In
         </ActionButton>
       </div>
@@ -32,6 +43,11 @@ export default function Home() {
       </div>
 
       <CollapsibleSettings></CollapsibleSettings>
+
+      <LoginModal
+        isOpen={isLoginModalOpen}
+        onClose={() => setIsLoginModalOpen(false)}
+      />
     </div>
   );
 }
