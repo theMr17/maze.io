@@ -146,7 +146,7 @@ const JoinRoomModal: React.FC<JoinRoomModalProps> = ({ isOpen, onClose }) => {
               >
                 <div>
                   <div className="font-medium text-secondary-foreground">
-                    {room.hostName}'s Room
+                    {room.hostName}&apos;s Room
                   </div>
                   <div className="text-xs">
                     {room.mode} • {room.players}/{room.maxPlayers} • Code:{" "}
