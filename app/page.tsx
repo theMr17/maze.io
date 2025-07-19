@@ -3,6 +3,7 @@
 import ActionButton from "@/components/button/ActionButton";
 import PlayButton from "@/components/button/PlayButton";
 import CollapsibleSettings from "@/components/CollapsibleSettings";
+import JoinRoomModal from "@/components/modal/JoinRoomModal";
 import LoginModal from "@/components/modal/LoginModal";
 import { useState } from "react";
 
@@ -11,6 +12,7 @@ export default function Home() {
   const playerLevel = 53;
 
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [isJoinRoomModalOpen, setIsJoinRoomModalOpen] = useState(false);
 
   return (
     <div className="maze-pattern-bg h-screen flex items-center justify-center">
@@ -38,7 +40,12 @@ export default function Home() {
         <PlayButton className="w-full max-w-sm">Play</PlayButton>
         <div className="flex space-x-4 w-full max-w-sm mt-5">
           <ActionButton className="flex-1">Create</ActionButton>
-          <ActionButton className="flex-1">Join</ActionButton>
+          <ActionButton
+            className="flex-1"
+            onClick={() => setIsJoinRoomModalOpen(true)}
+          >
+            Join
+          </ActionButton>
         </div>
       </div>
 
@@ -47,6 +54,11 @@ export default function Home() {
       <LoginModal
         isOpen={isLoginModalOpen}
         onClose={() => setIsLoginModalOpen(false)}
+      />
+
+      <JoinRoomModal
+        isOpen={isJoinRoomModalOpen}
+        onClose={() => setIsJoinRoomModalOpen(false)}
       />
     </div>
   );

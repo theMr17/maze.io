@@ -55,3 +55,12 @@ body {
 .input {
   @apply w-full mt-2 h-12 border-2 p-2 rounded bg-primary-variant text-primary-foreground focus:border-3 focus:outline-none;
 }
+
+.scrollbar-hide {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
