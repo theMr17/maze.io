@@ -133,7 +133,7 @@ const JoinRoomModal: React.FC<JoinRoomModalProps> = ({ isOpen, onClose }) => {
     <Modal isOpen={isOpen} onClose={onClose}>
       <div className="w-2xl h-80 flex gap-6">
         <div className="flex flex-col md:w-2/3 space-y-2 overflow-y-auto border-3 border-border rounded p-4 scrollbar-hide bg-tertiary-variant">
-          {rooms.length === 12 ? (
+          {rooms.length === 0 ? (
             <div className="text-sm text-center m-auto">
               No public rooms available.
             </div>
