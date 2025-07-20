@@ -3,6 +3,7 @@
 import ActionButton from "@/components/button/ActionButton";
 import PlayButton from "@/components/button/PlayButton";
 import CollapsibleSettings from "@/components/CollapsibleSettings";
+import CreateRoomModal from "@/components/modal/CreateRoomModal";
 import JoinRoomModal from "@/components/modal/JoinRoomModal";
 import LoginModal from "@/components/modal/LoginModal";
 import { useState } from "react";
@@ -12,6 +13,7 @@ export default function Home() {
   const playerLevel = 53;
 
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [isCreateRoomModalOpen, setIsCreateRoomModalOpen] = useState(false);
   const [isJoinRoomModalOpen, setIsJoinRoomModalOpen] = useState(false);
 
   return (
@@ -39,7 +41,12 @@ export default function Home() {
         <img src="maze-logo.svg" alt="Maze Logo" className="w-70" />
         <PlayButton className="w-full max-w-sm">Play</PlayButton>
         <div className="flex space-x-4 w-full max-w-sm mt-5">
-          <ActionButton className="flex-1">Create</ActionButton>
+          <ActionButton
+            className="flex-1"
+            onClick={() => setIsCreateRoomModalOpen(true)}
+          >
+            Create
+          </ActionButton>
           <ActionButton
             className="flex-1"
             onClick={() => setIsJoinRoomModalOpen(true)}
@@ -59,6 +66,11 @@ export default function Home() {
       <JoinRoomModal
         isOpen={isJoinRoomModalOpen}
         onClose={() => setIsJoinRoomModalOpen(false)}
+      />
+
+      <CreateRoomModal
+        isOpen={isCreateRoomModalOpen}
+        onClose={() => setIsCreateRoomModalOpen(false)}
       />
     </div>
   );

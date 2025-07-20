@@ -19,7 +19,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={galindo.className}>
-      <body>
+      <body className="select-none">
         {children}
         <div id="modal-container" />
       </body>
