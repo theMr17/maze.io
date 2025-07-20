@@ -131,8 +131,8 @@ const JoinRoomModal: React.FC<JoinRoomModalProps> = ({ isOpen, onClose }) => {
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
-      <div className="w-2xl h-80 flex gap-6">
-        <div className="flex flex-col md:w-2/3 space-y-2 overflow-y-auto border-3 border-border rounded p-4 scrollbar-hide bg-tertiary-variant">
+      <div className="w-3xl h-100 flex">
+        <div className="flex flex-col md:w-3/5 space-y-2 overflow-y-auto p-6 scrollbar-hide bg-tertiary-variant">
           {rooms.length === 0 ? (
             <div className="text-sm text-center m-auto">
               No public rooms available.
@@ -159,7 +159,7 @@ const JoinRoomModal: React.FC<JoinRoomModalProps> = ({ isOpen, onClose }) => {
           )}
         </div>
 
-        <div className="md:w-1/3 space-y-4 flex flex-col justify-center">
+        <div className="md:w-2/5 space-y-4 flex flex-col justify-center p-6">
           <h3 className="text-lg font-bold text-primary-foreground">
             Join a Private Room
           </h3>

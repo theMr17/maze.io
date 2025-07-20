@@ -21,7 +21,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
-      <div className="w-80 space-y-4">
+      <div className="w-94 space-y-4 p-8">
         <ActionButton
           className="flex items-center justify-center gap-4 w-full bg-secondary text-secondary-foreground border-2 border-border"
           variant="light"

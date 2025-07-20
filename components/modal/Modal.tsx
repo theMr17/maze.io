@@ -39,7 +39,7 @@ export function Modal({ isOpen, onClose, children }: ModalProps) {
       onClick={onClose} // Close on outside click
     >
       <div
-        className="bg-primary p-8 rounded shadow-lg"
+        className="bg-primary rounded shadow-lg overflow-clip"
         onClick={(e) => e.stopPropagation()} // Prevent inside clicks from closing
       >
         {children}
