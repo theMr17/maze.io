@@ -6,11 +6,13 @@ import CollapsibleSettings from "@/components/CollapsibleSettings";
 import CreateRoomModal from "@/components/modal/CreateRoomModal";
 import JoinRoomModal from "@/components/modal/JoinRoomModal";
 import LoginModal from "@/components/modal/LoginModal";
+import { useAuth } from "@/hooks/useAuth";
 import { useState } from "react";
 
 export default function Home() {
-  const username = "Player1";
   const playerLevel = 53;
+
+  const { authData, isLoading } = useAuth();
 
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isCreateRoomModalOpen, setIsCreateRoomModalOpen] = useState(false);
@@ -24,17 +26,21 @@ export default function Home() {
             <span className="text-2xl text-black">{playerLevel}</span>
           </div>
           <div className="absolute left-16 bg-tertiary border-6 border-border pl-10 pr-4 py-1 rounded">
-            <span className="text-2xl">{username}</span>
+            <span className="text-2xl">
+              {isLoading ? "Loading..." : authData?.user?.name || "Guest"}
+            </span>
           </div>
         </div>
 
-        <ActionButton
-          className="bg-primary-variant"
-          variant="light"
-          onClick={() => setIsLoginModalOpen(true)}
-        >
-          Log In
-        </ActionButton>
+        {authData?.user?.isGuest ? (
+          <ActionButton
+            className="bg-primary-variant"
+            variant="light"
+            onClick={() => setIsLoginModalOpen(true)}
+          >
+            Log In
+          </ActionButton>
+        ) : null}
       </div>
 
       <div className="h-full w-full flex flex-col justify-center items-center">

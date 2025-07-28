@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { Modal } from "./Modal"; // Assuming Modal is in the same folder
+import { Modal } from "./Modal";
 import ActionButton from "../button/ActionButton";
+import { loginWithCredentials } from "@/services/authService"; // Adjust path if different
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -12,11 +13,20 @@ interface LoginModalProps {
 const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleLogin = () => {
-    console.log("Logging in with:", { email, password });
-    // TODO: Add actual login logic here
-    onClose(); // Close after login (if successful)
+  const handleLogin = async () => {
+    setError(null);
+    setIsLoading(true);
+    try {
+      await loginWithCredentials(email, password);
+      onClose();
+    } catch (err: any) {
+      setError(err.message || "Login failed. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -63,8 +73,14 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
           />
         </label>
 
-        <ActionButton onClick={handleLogin} className="w-full">
-          Log In
+        {error && <p className="text-red-500 text-sm">{error}</p>}
+
+        <ActionButton
+          onClick={handleLogin}
+          className="w-full"
+          disabled={isLoading}
+        >
+          {isLoading ? "Logging in..." : "Log In"}
         </ActionButton>
       </div>
     </Modal>
