@@ -22,8 +22,12 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
     try {
       await loginWithCredentials(email, password);
       onClose();
-    } catch (err: any) {
-      setError(err.message || "Login failed. Please try again.");
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(err.message || "Login failed. Please try again.");
+      } else {
+        setError("Login failed. Please try again.");
+      }
     } finally {
       setIsLoading(false);
     }
@@ -73,7 +77,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
           />
         </label>
 
-        {error && <p className="text-red-500 text-sm">{error}</p>}
+        {error && <p className="text-secondary text-sm">{error}</p>}
 
         <ActionButton
           onClick={handleLogin}
