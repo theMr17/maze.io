@@ -29,7 +29,7 @@ export interface RoomUser {
   id: string;
 }
 
-export interface RoomResponse {
+export interface Room {
   id: string;
   name: string;
   type: "Public" | "Private";

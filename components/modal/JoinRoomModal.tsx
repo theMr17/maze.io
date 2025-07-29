@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { Modal } from "./Modal";
 import ActionButton from "../button/ActionButton";
+import { joinRoom } from "@/services/roomService";
+import { useRouter } from "next/navigation";
 
 interface JoinRoomModalProps {
   isOpen: boolean;
@@ -108,6 +110,8 @@ const JoinRoomModal: React.FC<JoinRoomModalProps> = ({ isOpen, onClose }) => {
   const [roomCode, setRoomCode] = useState("");
   const [rooms, setRooms] = useState<PublicRoom[]>([]);
 
+  const router = useRouter();
+
   useEffect(() => {
     if (isOpen) {
       // TODO: Replace with API/socket call to fetch public rooms
@@ -115,9 +119,17 @@ const JoinRoomModal: React.FC<JoinRoomModalProps> = ({ isOpen, onClose }) => {
     }
   }, [isOpen]);
 
-  const handleJoin = (code: string) => {
-    console.log("Joining room:", code);
-    // TODO: emit socket join-room event or API call
+  const handleJoin = async (code: string) => {
+    try {
+      const res = await joinRoom(code);
+
+      const roomCode = res.data.roomCode;
+      router.push(`/lobby?code=${roomCode}`);
+
+      onClose();
+    } catch (err) {
+      console.error("Room joining failed:", err);
+    }
     onClose();
   };
 

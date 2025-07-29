@@ -1,5 +1,5 @@
 import { ApiResponse } from "@/types/apiResponse";
-import { GameMode, RoomResponse } from "@/types/room";
+import { GameMode, Room } from "@/types/room";
 
 export async function getGameModes(): Promise<ApiResponse<GameMode[]>> {
   const res = await fetch(
@@ -24,7 +24,7 @@ export async function createRoom(
   type: "Public" | "Private",
   selectedMode: string | null,
   options: Record<string, string | number>
-): Promise<RoomResponse> {
+): Promise<Room> {
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_API_BASE_URL}/room/create`,
     {
@@ -45,11 +45,26 @@ export async function createRoom(
     }
   );
 
-  console.log(selectedMode);
-
   if (!res.ok) throw new Error("Room creation failed");
 
   const json = await res.json();
-  console.log("Room created successfully:", json);
+  return json;
+}
+
+export async function joinRoom(code: string): Promise<ApiResponse<Room>> {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_BASE_URL}/room/join?code=${code}`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    }
+  );
+
+  if (!res.ok) throw new Error("Room joining failed");
+
+  const json = await res.json();
   return json;
 }
