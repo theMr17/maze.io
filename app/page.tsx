@@ -27,12 +27,12 @@ export default function Home() {
           </div>
           <div className="absolute left-16 bg-tertiary border-6 border-border pl-10 pr-4 py-1 rounded">
             <span className="text-2xl">
-              {isLoading ? "Loading..." : authData?.user?.name || "Guest"}
+              {isLoading ? "Loading..." : authData?.name || "Guest"}
             </span>
           </div>
         </div>
 
-        {authData?.user?.isGuest ? (
+        {authData?.isGuest ? (
           <ActionButton
             className="bg-primary-variant"
             variant="light"

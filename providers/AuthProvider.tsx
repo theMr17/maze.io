@@ -2,18 +2,18 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 import { guestLogin } from "@/services/authService";
-import { AuthResponse } from "@/types/auth";
+import { AuthResponse, User } from "@/types/auth";
 
 interface AuthContextType {
-  authData: AuthResponse["data"] | null;
-  setAuthData: (data: AuthResponse["data"] | null) => void;
+  authData: User | null;
+  setAuthData: (data: User | null) => void;
   isLoading: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [authData, setAuthData] = useState<AuthResponse["data"] | null>(null);
+  const [authData, setAuthData] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -22,7 +22,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     if (!user) {
       guestLogin()
         .then((res) => {
-          setAuthData(res.data);
+          setAuthData(res.data.user);
         })
         .catch(console.error)
         .finally(() => setIsLoading(false));

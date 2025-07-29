@@ -24,7 +24,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
     setIsLoading(true);
     try {
       const res = await loginWithCredentials(email, password);
-      setAuthData(res.data);
+      setAuthData(res.data.user);
       onClose();
     } catch (err) {
       if (err instanceof Error) {
