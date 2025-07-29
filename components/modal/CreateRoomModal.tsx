@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import { Modal } from "./Modal";
 import ActionButton from "../button/ActionButton";
 import { GameMode } from "@/types/room";
-import { getGameModes } from "@/services/roomService";
+import { createRoom, getGameModes } from "@/services/roomService";
+import { useRouter } from "next/navigation";
 
 interface CreateRoomModalProps {
   isOpen: boolean;
@@ -23,6 +24,8 @@ const CreateRoomModal: React.FC<CreateRoomModalProps> = ({
   );
   const [gameModes, setGameModes] = useState<GameMode[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const router = useRouter();
 
   useEffect(() => {
     const fetchModes = async () => {
@@ -67,9 +70,16 @@ const CreateRoomModal: React.FC<CreateRoomModalProps> = ({
     };
 
     try {
-      // Replace with actual API or socket call
-      console.log("Creating room with config:", config);
-      // await api.createRoom(config)
+      const res = await createRoom(
+        roomName,
+        roomType as "Public" | "Private",
+        selectedMode,
+        formState
+      );
+
+      const roomCode = res.roomCode;
+      router.push(`/lobby?code=${roomCode}`);
+
       onClose();
     } catch (err) {
       console.error("Room creation failed:", err);
@@ -143,6 +153,7 @@ const CreateRoomModal: React.FC<CreateRoomModalProps> = ({
           <ActionButton
             onClick={handleCreate}
             className="bg-primary text-primary-foreground border-2 border-border"
+            disabled={loading || !selectedMode || !roomName.trim()}
           >
             Create Room
           </ActionButton>
@@ -177,6 +188,7 @@ const CreateRoomModal: React.FC<CreateRoomModalProps> = ({
                 <input
                   type="number"
                   value={formState[option.key]}
+                  // this should never be null, when type is number.
                   min={option.min ?? undefined}
                   max={option.max ?? undefined}
                   onChange={(e) =>

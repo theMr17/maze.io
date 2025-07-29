@@ -16,3 +16,27 @@ export interface GameMode {
   description: string;
   options: GameModeOption[];
 }
+
+export interface RoomOption {
+  id: string;
+  gameModeId: string;
+  name: string;
+  value: string;
+  roomId: string;
+}
+
+export interface RoomUser {
+  id: string;
+}
+
+export interface RoomResponse {
+  id: string;
+  name: string;
+  type: "Public" | "Private";
+  selectedMode: string;
+  createdBy: string;
+  roomCode: string;
+  createdAt: string;
+  options: RoomOption[];
+  users: RoomUser[];
+}
