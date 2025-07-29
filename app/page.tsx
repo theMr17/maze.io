@@ -6,7 +6,7 @@ import CollapsibleSettings from "@/components/CollapsibleSettings";
 import CreateRoomModal from "@/components/modal/CreateRoomModal";
 import JoinRoomModal from "@/components/modal/JoinRoomModal";
 import LoginModal from "@/components/modal/LoginModal";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/providers/AuthProvider";
 import { useState } from "react";
 
 export default function Home() {

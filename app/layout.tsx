@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Galindo } from "next/font/google";
 import "./globals.css";
+import { AuthProvider } from "@/providers/AuthProvider";
 
 const galindo = Galindo({
   subsets: ["latin"],
@@ -18,11 +19,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={galindo.className}>
-      <body className="select-none">
-        {children}
-        <div id="modal-container" />
-      </body>
-    </html>
+    <AuthProvider>
+      <html lang="en" className={galindo.className}>
+        <body className="select-none">
+          {children}
+          <div id="modal-container" />
+        </body>
+      </html>
+    </AuthProvider>
   );
 }

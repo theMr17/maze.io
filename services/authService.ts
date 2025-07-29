@@ -1,4 +1,5 @@
-import { getToken, setToken } from "@/utils/cookies";
+"use client";
+
 import { AuthResponse } from "@/types/auth";
 
 export async function guestLogin(): Promise<AuthResponse> {
@@ -9,6 +10,7 @@ export async function guestLogin(): Promise<AuthResponse> {
       headers: {
         "Content-Type": "application/json",
       },
+      credentials: "include",
     }
   );
 
@@ -16,7 +18,6 @@ export async function guestLogin(): Promise<AuthResponse> {
 
   const json = await res.json();
 
-  setToken(json.data.accessToken);
   localStorage.setItem("user", JSON.stringify(json.data.user));
 
   return json;
@@ -26,17 +27,15 @@ export async function loginWithCredentials(
   email: string,
   password: string
 ): Promise<AuthResponse> {
-  const token = getToken();
-
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/login`,
     {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
       },
       body: JSON.stringify({ email, password, name: "DefaultName" }),
+      credentials: "include",
     }
   );
 
@@ -44,7 +43,6 @@ export async function loginWithCredentials(
 
   const json = await res.json();
 
-  setToken(json.data.accessToken);
   localStorage.setItem("user", JSON.stringify(json.data.user));
 
   return json;

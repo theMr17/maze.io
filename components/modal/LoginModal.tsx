@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Modal } from "./Modal";
 import ActionButton from "../button/ActionButton";
 import { loginWithCredentials } from "@/services/authService"; // Adjust path if different
+import { useAuth } from "@/providers/AuthProvider";
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -16,11 +17,14 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
+  const { setAuthData } = useAuth();
+
   const handleLogin = async () => {
     setError(null);
     setIsLoading(true);
     try {
-      await loginWithCredentials(email, password);
+      const res = await loginWithCredentials(email, password);
+      setAuthData(res.data);
       onClose();
     } catch (err) {
       if (err instanceof Error) {
