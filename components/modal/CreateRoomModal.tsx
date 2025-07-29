@@ -3,145 +3,13 @@
 import { useEffect, useState } from "react";
 import { Modal } from "./Modal";
 import ActionButton from "../button/ActionButton";
+import { GameMode } from "@/types/room";
+import { getGameModes } from "@/services/roomService";
 
 interface CreateRoomModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
-
-// Hardcoded temporarily, will be replaced with dynamic data later
-interface GameMode {
-  id: string;
-  name: string;
-  description: string;
-  options: {
-    key: string;
-    label: string;
-    type: "dropdown" | "number";
-    values?: string[];
-    min?: number;
-    max?: number;
-    default: string | number;
-    description: string;
-  }[];
-}
-
-const gameModeInfo: GameMode[] = [
-  {
-    id: "maze-duel",
-    name: "Maze Duel",
-    description: "1v1 battles in a small maze.",
-    options: [
-      {
-        key: "mazeSize",
-        label: "Maze Size",
-        type: "dropdown",
-        values: ["Small", "Medium", "Large"],
-        default: "Medium",
-        description: "Determines the overall complexity and area of the maze.",
-      },
-      {
-        key: "playerCount",
-        label: "Player Count",
-        type: "number",
-        min: 2,
-        max: 2,
-        default: 2,
-        description: "Only 2 players for head-to-head matches.",
-      },
-      {
-        key: "visibility",
-        label: "Visibility Range",
-        type: "dropdown",
-        values: ["Low", "Medium", "High"],
-        default: "High",
-        description:
-          "Controls how far players can see in the maze. Higher visibility makes it easier to spot opponents and navigate.",
-      },
-    ],
-  },
-  {
-    id: "maze-royale",
-    name: "Maze Royale",
-    description: "Up to 10 players battle it out. Last player standing wins.",
-    options: [
-      {
-        key: "mazeSize",
-        label: "Maze Size",
-        type: "dropdown",
-        values: ["Medium", "Large", "Extra Large"],
-        default: "Large",
-        description: "Larger mazes support more players and hiding spaces.",
-      },
-      {
-        key: "playerCount",
-        label: "Player Count",
-        type: "number",
-        min: 2,
-        max: 10,
-        default: 6,
-        description: "Choose player count (2 to 10).",
-      },
-      {
-        key: "decayRate",
-        label: "Visibility Decay Rate",
-        type: "dropdown",
-        values: ["Slow", "Normal", "Fast"],
-        default: "Normal",
-        description: "Controls how quickly player visibility fades.",
-      },
-      {
-        key: "allowSpectators",
-        label: "Allow Spectators",
-        type: "dropdown",
-        values: ["Yes", "No"],
-        default: "Yes",
-        description: "Choose whether others can watch the match.",
-      },
-    ],
-  },
-  {
-    id: "tag-maze",
-    name: "Tag Maze",
-    description: "One player is 'It' and must tag others before time runs out.",
-    options: [
-      {
-        key: "mazeSize",
-        label: "Maze Size",
-        type: "dropdown",
-        values: ["Small", "Medium", "Large"],
-        default: "Medium",
-        description: "Affects mobility and strategy.",
-      },
-      {
-        key: "playerCount",
-        label: "Player Count",
-        type: "number",
-        min: 2,
-        max: 8,
-        default: 4,
-        description: "Player count (2 to 8).",
-      },
-      {
-        key: "tagTimer",
-        label: "'It' Timer (sec)",
-        type: "number",
-        min: 30,
-        max: 300,
-        default: 120,
-        description: "Duration the 'It' player has to tag someone.",
-      },
-      {
-        key: "rotationMode",
-        label: "Random 'It' Rotation",
-        type: "dropdown",
-        values: ["Every Round", "On Timeout", "Never"],
-        default: "Every Round",
-        description: "When the 'It' role rotates.",
-      },
-    ],
-  },
-];
 
 const CreateRoomModal: React.FC<CreateRoomModalProps> = ({
   isOpen,
@@ -149,21 +17,39 @@ const CreateRoomModal: React.FC<CreateRoomModalProps> = ({
 }) => {
   const [roomName, setRoomName] = useState("Player1's Room");
   const [roomType, setRoomType] = useState("Public");
-  const [selectedMode, setSelectedMode] = useState(gameModeInfo[0].id);
+  const [selectedMode, setSelectedMode] = useState<string | null>(null);
   const [formState, setFormState] = useState<Record<string, string | number>>(
     {}
   );
+  const [gameModes, setGameModes] = useState<GameMode[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const mode = gameModeInfo.find((m) => m.id === selectedMode);
+    const fetchModes = async () => {
+      try {
+        const response = await getGameModes();
+        setGameModes(response.data);
+        setSelectedMode(response.data[0]?.id || null);
+      } catch (err) {
+        console.error("Failed to load game modes", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (isOpen) fetchModes();
+  }, [isOpen]);
+
+  useEffect(() => {
+    const mode = gameModes.find((m) => m.id === selectedMode);
     if (mode) {
       const defaultState: Record<string, string | number> = {};
       mode.options.forEach((opt) => {
-        defaultState[opt.key] = opt.default;
+        defaultState[opt.key] = opt.defaultValue;
       });
       setFormState(defaultState);
     }
-  }, [selectedMode]);
+  }, [selectedMode, gameModes]);
 
   const handleInputChange = (key: string, value: string | number) => {
     setFormState((prev) => ({
@@ -191,13 +77,18 @@ const CreateRoomModal: React.FC<CreateRoomModalProps> = ({
   };
 
   const currentOptions =
-    gameModeInfo.find((mode) => mode.id === selectedMode)?.options ?? [];
+    gameModes.find((mode) => mode.id === selectedMode)?.options ?? [];
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <div className="w-2xl h-100 flex bg-primary-variant/80">
         <div className="flex flex-col md:w-2/5 overflow-y-auto">
-          {gameModeInfo.map((mode) => (
+          {loading ? (
+            <div className="flex items-center justify-center h-full">
+              <span className="text-primary-foreground">Loading...</span>
+            </div>
+          ) : null}
+          {gameModes.map((mode) => (
             <div
               key={mode.id}
               className={`p-2 h-25 cursor-pointer flex items-center gap-3 rounded-l ${
@@ -286,8 +177,8 @@ const CreateRoomModal: React.FC<CreateRoomModalProps> = ({
                 <input
                   type="number"
                   value={formState[option.key]}
-                  min={option.min}
-                  max={option.max}
+                  min={option.min!!}
+                  max={option.max!!}
                   onChange={(e) =>
                     handleInputChange(option.key, Number(e.target.value))
                   }
