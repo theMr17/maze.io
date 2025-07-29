@@ -62,13 +62,6 @@ const CreateRoomModal: React.FC<CreateRoomModalProps> = ({
   };
 
   const handleCreate = async () => {
-    const config = {
-      roomName,
-      roomType,
-      selectedMode,
-      options: formState,
-    };
-
     try {
       const res = await createRoom(
         roomName,
