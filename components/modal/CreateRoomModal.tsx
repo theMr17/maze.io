@@ -177,8 +177,8 @@ const CreateRoomModal: React.FC<CreateRoomModalProps> = ({
                 <input
                   type="number"
                   value={formState[option.key]}
-                  min={option.min!!}
-                  max={option.max!!}
+                  min={option.min ?? undefined}
+                  max={option.max ?? undefined}
                   onChange={(e) =>
                     handleInputChange(option.key, Number(e.target.value))
                   }
