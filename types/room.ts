@@ -40,3 +40,15 @@ export interface Room {
   options: RoomOption[];
   users: RoomUser[];
 }
+
+export interface JoinedRoomPayload {
+  id: string;
+  name: string;
+  type: "Public" | "Private";
+  selectedMode: string;
+  createdBy: string;
+  roomCode: string;
+  createdAt: string;
+  users: (RoomUser & { email: string | null; name: string | null })[];
+  gameMode: GameMode; // game mode options is not sent currently
+}

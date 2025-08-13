@@ -7,6 +7,7 @@ import { GameMode } from "@/types/room";
 import { createRoom, getGameModes } from "@/services/roomService";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/providers/AuthProvider";
+import { initSocket } from "@/lib/socket";
 
 interface CreateRoomModalProps {
   isOpen: boolean;
@@ -74,6 +75,8 @@ const CreateRoomModal: React.FC<CreateRoomModalProps> = ({
         selectedMode,
         formState
       );
+
+      initSocket(res.id);
 
       const roomCode = res.roomCode;
       router.push(`/lobby?code=${roomCode}`);
