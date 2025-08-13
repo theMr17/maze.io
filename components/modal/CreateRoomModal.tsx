@@ -6,6 +6,7 @@ import ActionButton from "../button/ActionButton";
 import { GameMode } from "@/types/room";
 import { createRoom, getGameModes } from "@/services/roomService";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/providers/AuthProvider";
 
 interface CreateRoomModalProps {
   isOpen: boolean;
@@ -16,7 +17,11 @@ const CreateRoomModal: React.FC<CreateRoomModalProps> = ({
   isOpen,
   onClose,
 }) => {
-  const [roomName, setRoomName] = useState("Player1's Room");
+  const { authData } = useAuth();
+  const [roomName, setRoomName] = useState(() => {
+    const playerName = authData?.name || "Player1";
+    return `${playerName}'s Room`;
+  });
   const [roomType, setRoomType] = useState("Public");
   const [selectedMode, setSelectedMode] = useState<string | null>(null);
   const [formState, setFormState] = useState<Record<string, string | number>>(
