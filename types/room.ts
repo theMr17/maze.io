@@ -52,3 +52,9 @@ export interface JoinedRoomPayload {
   users: (RoomUser & { email: string | null; name: string | null })[];
   gameMode: GameMode; // game mode options is not sent currently
 }
+
+export interface StartMatchPayload {
+  gameMode: string;
+  mazeSize: { row: number; col: number };
+  grid: number[][];
+}

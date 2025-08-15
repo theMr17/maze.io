@@ -44,8 +44,7 @@ const Lobby = () => {
   const isOwner = lobby.createdBy === currentUserId;
 
   const handleStartGame = () => {
-    console.log("Game started!");
-    // socket.emit(SOCKET_EVENTS.COMMON.START_MATCH, { roomCode: lobby.roomCode });
+    router.push("/play");
   };
 
   const handleLeaveLobby = () => {
@@ -62,7 +61,7 @@ const Lobby = () => {
       </ActionButton>
       <div className="md:w-3/5 flex flex-col"></div>
       <div className="md:w-2/5 flex flex-col p-10">
-        <div className="bg-tertiary-variant p-4 rounded-lg space-y-2">
+        <div className="bg-tertiary-variant p-4 rounded-lg space-y-2 min-h-96">
           <div className="mt-1 mb-2 justify-between flex flex-row items-center">
             <h4 className="text-tertiary-foreground">
               Room Code: {lobby.roomCode}

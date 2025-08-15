@@ -3,6 +3,7 @@ export const SOCKET_EVENTS = {
     JOINED_ROOM: "joined-room",
     PLAYER_LEFT: "player-left",
     START_MATCH: "start-match",
+    MAZE_CREATED: "maze-created",
   },
 
   MAZE_DUEL: {

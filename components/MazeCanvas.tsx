@@ -142,6 +142,14 @@ export default function MazeCanvas({ maze, cellSize = 20 }: MazeCanvasProps) {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
+    // return if maze is empty or not valid
+    if (!Array.isArray(maze) || maze.length === 0 || !Array.isArray(maze[0])) {
+      canvas.width = 0;
+      canvas.height = 0;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      return;
+    }
+
     canvas.width = maze[0].length * cellSize;
     canvas.height = maze.length * cellSize;
 
