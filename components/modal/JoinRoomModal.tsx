@@ -5,6 +5,7 @@ import { Modal } from "./Modal";
 import ActionButton from "../button/ActionButton";
 import { joinRoom } from "@/services/roomService";
 import { useRouter } from "next/navigation";
+import { initSocket } from "@/lib/socket";
 
 interface JoinRoomModalProps {
   isOpen: boolean;
@@ -122,6 +123,8 @@ const JoinRoomModal: React.FC<JoinRoomModalProps> = ({ isOpen, onClose }) => {
   const handleJoin = async (code: string) => {
     try {
       const res = await joinRoom(code);
+
+      initSocket(res.data.id);
 
       const roomCode = res.data.roomCode;
       router.push(`/lobby?code=${roomCode}`);

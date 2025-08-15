@@ -6,11 +6,17 @@ import { getSocket } from "@/lib/socket";
 import { SOCKET_EVENTS } from "@/constants/socketEvents";
 import { JoinedRoomPayload } from "@/types/room";
 import { useAuth } from "@/providers/AuthProvider";
+import { useRouter } from "next/navigation";
+import CollapsibleSettings from "@/components/CollapsibleSettings";
 
 const Lobby = () => {
   const [lobby, setLobby] = useState<JoinedRoomPayload | null>(null);
   const { authData } = useAuth();
   const currentUserId = authData?.id || "";
+
+  const maxPlayers = 2;
+
+  const router = useRouter();
 
   useEffect(() => {
     const socket = getSocket();
@@ -30,12 +36,11 @@ const Lobby = () => {
   if (!lobby) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-tertiary-variant">
-        <p className="text-primary-foreground">Joining room...</p>
+        <p className="text-primary-foreground">Connecting to room...</p>
       </div>
     );
   }
 
-  const players = lobby.users;
   const isOwner = lobby.createdBy === currentUserId;
 
   const handleStartGame = () => {
@@ -43,41 +48,65 @@ const Lobby = () => {
     // socket.emit(SOCKET_EVENTS.COMMON.START_MATCH, { roomCode: lobby.roomCode });
   };
 
-  return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-tertiary-variant p-6">
-      <div className="w-full max-w-xl bg-tertiary-variant-2 p-6 rounded-xl shadow-md space-y-4">
-        <h1 className="text-2xl font-bold text-primary-foreground text-center">
-          {lobby.name}
-        </h1>
+  const handleLeaveLobby = () => {
+    router.push("/");
+  };
 
-        <div className="h-64 overflow-y-auto space-y-2 scrollbar-hide">
-          {players.map((player) => (
+  return (
+    <div className="maze-pattern-bg h-screen flex items-center">
+      <ActionButton
+        className="absolute left-4 top-4"
+        onClick={handleLeaveLobby}
+      >
+        Leave
+      </ActionButton>
+      <div className="md:w-3/5 flex flex-col"></div>
+      <div className="md:w-2/5 flex flex-col p-10">
+        <div className="bg-tertiary-variant p-4 rounded-lg space-y-2">
+          <div className="mt-1 mb-2 justify-between flex flex-row items-center">
+            <h4 className="text-tertiary-foreground">
+              Room Code: {lobby.roomCode}
+            </h4>
+            <div className="text-sm text-tertiary-foreground">
+              Joined: {lobby.users.length}/{maxPlayers}
+            </div>
+          </div>
+          {lobby.users.map((player) => (
             <div
               key={player.id}
-              className="flex justify-between items-center px-4 py-2 rounded bg-background hover:brightness-110 transition"
+              className="flex items-center justify-between bg-tertiary-variant-2 p-3 rounded"
             >
-              <span className="text-primary-foreground font-medium">
-                {player.name || "Anonymous"}
-              </span>
-              {lobby.createdBy === player.id && (
-                <span className="text-xs text-primary font-semibold">
-                  Owner
-                </span>
+              <div className="font-medium text-secondary-foreground">
+                {player.name ? player.name : "No name"}
+                {player.id === currentUserId && " (You)"}
+              </div>
+              {player.id === lobby.createdBy && (
+                <img
+                  src="/crown.svg"
+                  alt="Host"
+                  className="w-5 h-5 ml-2"
+                  title="Host"
+                />
               )}
             </div>
           ))}
+          {lobby.users.length < maxPlayers && (
+            <div className="text-sm text-tertiary-foreground mt-4 text-center">
+              Waiting for players to join...
+            </div>
+          )}
         </div>
 
-        {isOwner && (
-          <ActionButton
-            onClick={handleStartGame}
-            className="w-full bg-secondary text-secondary-foreground border-2 border-border"
-            variant="light"
-          >
-            Start Game
-          </ActionButton>
-        )}
+        <ActionButton
+          onClick={handleStartGame}
+          className="bg-secondary text-secondary-foreground border-2 border-border mt-6"
+          variant="light"
+        >
+          Start Game
+        </ActionButton>
       </div>
+
+      <CollapsibleSettings></CollapsibleSettings>
     </div>
   );
 };
