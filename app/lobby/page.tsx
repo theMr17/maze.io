@@ -41,8 +41,6 @@ const Lobby = () => {
     );
   }
 
-  const isOwner = lobby.createdBy === currentUserId;
-
   const handleStartGame = () => {
     router.push("/play");
   };
