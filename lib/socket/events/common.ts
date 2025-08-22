@@ -6,7 +6,7 @@ export const registerCommonEvents = (socket: Socket) => {
     console.log("Player joined:", socket.id);
   });
 
-  socket.on(SOCKET_EVENTS.COMMON.PLAYER_LEFT, () => {
+  socket.on(SOCKET_EVENTS.COMMON.LEFT_ROOM, () => {
     console.log("Player left:", socket.id);
   });
 
