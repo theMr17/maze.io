@@ -1,7 +1,7 @@
 export const SOCKET_EVENTS = {
   COMMON: {
     JOINED_ROOM: "joined-room",
-    PLAYER_LEFT: "player-left",
+    LEFT_ROOM: "left-room",
     START_MATCH: "start-match",
     MAZE_CREATED: "maze-created",
   },

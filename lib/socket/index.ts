@@ -6,7 +6,7 @@ export const initSocket = (roomId: string) => {
   if (!socket) {
     socket = io(process.env.NEXT_PUBLIC_SOCKET_SERVER_URL!, {
       withCredentials: true,
-      autoConnect: true,
+      autoConnect: false,
       query: { roomId },
     });
   }

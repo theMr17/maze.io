@@ -4,13 +4,13 @@ import ActionButton from "@/components/button/ActionButton";
 import React, { useEffect, useState } from "react";
 import { getSocket } from "@/lib/socket";
 import { SOCKET_EVENTS } from "@/constants/socketEvents";
-import { JoinedRoomPayload } from "@/types/room";
+import { RoomInfoPayload } from "@/types/room";
 import { useAuth } from "@/providers/AuthProvider";
 import { useRouter } from "next/navigation";
 import CollapsibleSettings from "@/components/CollapsibleSettings";
 
 const Lobby = () => {
-  const [lobby, setLobby] = useState<JoinedRoomPayload | null>(null);
+  const [lobby, setLobby] = useState<RoomInfoPayload | null>(null);
   const { authData } = useAuth();
   const currentUserId = authData?.id || "";
 
@@ -23,13 +23,24 @@ const Lobby = () => {
     socket.connect();
 
     // Listen for joined-room event
-    socket.on(SOCKET_EVENTS.COMMON.JOINED_ROOM, (data: JoinedRoomPayload) => {
+    socket.on(SOCKET_EVENTS.COMMON.JOINED_ROOM, (data: RoomInfoPayload) => {
       console.log("Joined room data:", data);
       setLobby(data);
     });
 
+    socket.on(SOCKET_EVENTS.COMMON.LEFT_ROOM, (data: RoomInfoPayload) => {
+      console.log("Left room data:", data);
+      setLobby(data);
+    });
+
+    socket.on(SOCKET_EVENTS.COMMON.MAZE_CREATED, (data: RoomInfoPayload) => {
+      router.push("/play");
+    });
+
     return () => {
       socket.off(SOCKET_EVENTS.COMMON.JOINED_ROOM);
+      socket.off(SOCKET_EVENTS.COMMON.LEFT_ROOM);
+      socket.off(SOCKET_EVENTS.COMMON.MAZE_CREATED);
     };
   }, []);
 
@@ -46,6 +57,7 @@ const Lobby = () => {
   };
 
   const handleLeaveLobby = () => {
+    getSocket().disconnect();
     router.push("/");
   };
 
@@ -94,16 +106,16 @@ const Lobby = () => {
           )}
         </div>
 
-        <ActionButton
-          onClick={handleStartGame}
-          className="bg-secondary text-secondary-foreground border-2 border-border mt-6"
-          variant="light"
-        >
-          Start Game
-        </ActionButton>
+        {lobby.createdBy === currentUserId && (
+          <ActionButton
+            onClick={handleStartGame}
+            className="bg-secondary text-secondary-foreground border-2 border-border mt-6"
+            variant="light"
+          >
+            Start Game
+          </ActionButton>
+        )}
       </div>
-
-      <CollapsibleSettings></CollapsibleSettings>
     </div>
   );
 };

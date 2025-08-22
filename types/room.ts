@@ -41,7 +41,7 @@ export interface Room {
   users: RoomUser[];
 }
 
-export interface JoinedRoomPayload {
+export interface RoomInfoPayload {
   id: string;
   name: string;
   type: "Public" | "Private";

@@ -173,7 +173,7 @@ const CreateRoomModal: React.FC<CreateRoomModalProps> = ({
 
               {option.type === "dropdown" ? (
                 <select
-                  value={formState[option.key]}
+                  value={formState[option.key] ?? ""}
                   onChange={(e) =>
                     handleInputChange(option.key, e.target.value)
                   }
@@ -188,12 +188,14 @@ const CreateRoomModal: React.FC<CreateRoomModalProps> = ({
               ) : option.type === "number" ? (
                 <input
                   type="number"
-                  value={formState[option.key]}
-                  // this should never be null, when type is number.
+                  value={formState[option.key] ?? ""}
                   min={option.min ?? undefined}
                   max={option.max ?? undefined}
                   onChange={(e) =>
-                    handleInputChange(option.key, Number(e.target.value))
+                    handleInputChange(
+                      option.key,
+                      e.target.value === "" ? "" : Number(e.target.value)
+                    )
                   }
                   className="input"
                 />
