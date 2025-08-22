@@ -7,7 +7,6 @@ import { SOCKET_EVENTS } from "@/constants/socketEvents";
 import { RoomInfoPayload } from "@/types/room";
 import { useAuth } from "@/providers/AuthProvider";
 import { useRouter } from "next/navigation";
-import CollapsibleSettings from "@/components/CollapsibleSettings";
 
 const Lobby = () => {
   const [lobby, setLobby] = useState<RoomInfoPayload | null>(null);
