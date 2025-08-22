@@ -55,6 +55,10 @@ export interface RoomInfoPayload {
 
 export interface StartMatchPayload {
   gameMode: string;
-  mazeSize: { row: number; col: number };
+  playerMove: {
+    row: number;
+    col: number;
+    tag: string;
+  }[];
   grid: number[][];
 }

@@ -1,12 +1,24 @@
 "use client";
 import { useEffect, useRef, useCallback } from "react";
 
+type Player = {
+  row: number;
+  col: number;
+  isOwner: boolean;
+  name: string;
+};
+
 type MazeCanvasProps = {
   maze: number[][];
+  players?: Player[];
   cellSize?: number;
 };
 
-export default function MazeCanvas({ maze, cellSize = 20 }: MazeCanvasProps) {
+export default function MazeCanvas({
+  maze,
+  players = [],
+  cellSize = 20,
+}: MazeCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   const getCell = useCallback(
@@ -135,6 +147,37 @@ export default function MazeCanvas({ maze, cellSize = 20 }: MazeCanvasProps) {
     }
   };
 
+  const drawPlayers = (ctx: CanvasRenderingContext2D) => {
+    players.forEach((player) => {
+      const { row, col, isOwner, name } = player;
+      const x = col * cellSize + cellSize / 2;
+      const y = row * cellSize + cellSize / 2;
+
+      // Draw circle
+      ctx.beginPath();
+      ctx.arc(x, y, cellSize / 3, 0, Math.PI * 2);
+      ctx.fillStyle = isOwner ? "red" : "black";
+      ctx.fill();
+      ctx.strokeStyle = "white";
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      ctx.font = `${cellSize}px Galindo`;
+      ctx.textAlign = "center";
+      ctx.textBaseline = "bottom";
+      ctx.letterSpacing = "1.5px";
+
+      // Outline first
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = "black";
+      ctx.strokeText(name, x, y - cellSize / 3 - 2);
+
+      // Fill on top
+      ctx.fillStyle = "white";
+      ctx.fillText(name, x, y - cellSize / 3 - 2);
+    });
+  };
+
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -171,7 +214,10 @@ export default function MazeCanvas({ maze, cellSize = 20 }: MazeCanvasProps) {
         }
       }
     }
-  }, [maze, cellSize, getCell]);
+
+    // Draw players last (on top of maze)
+    drawPlayers(ctx);
+  }, [maze, players, cellSize, getCell]);
 
   return (
     <div className="flex justify-center overflow-auto">
