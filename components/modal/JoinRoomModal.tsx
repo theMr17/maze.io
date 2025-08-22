@@ -5,7 +5,7 @@ import { Modal } from "./Modal";
 import ActionButton from "../button/ActionButton";
 import { joinRoom } from "@/services/roomService";
 import { useRouter } from "next/navigation";
-import { initSocket } from "@/lib/socket";
+import { useSocket } from "@/providers/SocketProvider";
 
 interface JoinRoomModalProps {
   isOpen: boolean;
@@ -110,6 +110,7 @@ const mockRooms: PublicRoom[] = [
 const JoinRoomModal: React.FC<JoinRoomModalProps> = ({ isOpen, onClose }) => {
   const [roomCode, setRoomCode] = useState("");
   const [rooms, setRooms] = useState<PublicRoom[]>([]);
+  const { connectToRoom } = useSocket();
 
   const router = useRouter();
 
@@ -124,7 +125,7 @@ const JoinRoomModal: React.FC<JoinRoomModalProps> = ({ isOpen, onClose }) => {
     try {
       const res = await joinRoom(code);
 
-      initSocket(res.data.id);
+      connectToRoom(res.data.id);
 
       const roomCode = res.data.roomCode;
       router.push(`/lobby?code=${roomCode}`);

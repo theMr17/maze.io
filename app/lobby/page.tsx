@@ -2,13 +2,16 @@
 
 import ActionButton from "@/components/button/ActionButton";
 import React, { useEffect, useState } from "react";
-import { getSocket } from "@/lib/socket";
 import { SOCKET_EVENTS } from "@/constants/socketEvents";
-import { RoomInfoPayload } from "@/types/room";
+import { RoomInfoPayload, StartMatchPayload } from "@/types/room";
 import { useAuth } from "@/providers/AuthProvider";
 import { useRouter } from "next/navigation";
+import { useSocket } from "@/providers/SocketProvider";
+import { useMatch } from "@/providers/MatchProvider";
 
 const Lobby = () => {
+  const { socket, disconnect } = useSocket();
+  const { setMatch } = useMatch();
   const [lobby, setLobby] = useState<RoomInfoPayload | null>(null);
   const { authData } = useAuth();
   const currentUserId = authData?.id || "";
@@ -18,28 +21,26 @@ const Lobby = () => {
   const router = useRouter();
 
   useEffect(() => {
-    const socket = getSocket();
-    socket.connect();
-
     // Listen for joined-room event
-    socket.on(SOCKET_EVENTS.COMMON.JOINED_ROOM, (data: RoomInfoPayload) => {
+    socket?.on(SOCKET_EVENTS.COMMON.JOINED_ROOM, (data: RoomInfoPayload) => {
       console.log("Joined room data:", data);
       setLobby(data);
     });
 
-    socket.on(SOCKET_EVENTS.COMMON.LEFT_ROOM, (data: RoomInfoPayload) => {
+    socket?.on(SOCKET_EVENTS.COMMON.LEFT_ROOM, (data: RoomInfoPayload) => {
       console.log("Left room data:", data);
       setLobby(data);
     });
 
-    socket.on(SOCKET_EVENTS.COMMON.MAZE_CREATED, () => {
+    socket?.on(SOCKET_EVENTS.COMMON.MAZE_CREATED, (data: StartMatchPayload) => {
+      setMatch(data);
       router.push("/play");
     });
 
     return () => {
-      socket.off(SOCKET_EVENTS.COMMON.JOINED_ROOM);
-      socket.off(SOCKET_EVENTS.COMMON.LEFT_ROOM);
-      socket.off(SOCKET_EVENTS.COMMON.MAZE_CREATED);
+      socket?.off(SOCKET_EVENTS.COMMON.JOINED_ROOM);
+      socket?.off(SOCKET_EVENTS.COMMON.LEFT_ROOM);
+      socket?.off(SOCKET_EVENTS.COMMON.MAZE_CREATED);
     };
   }, []);
 
@@ -52,11 +53,14 @@ const Lobby = () => {
   }
 
   const handleStartGame = () => {
-    router.push("/play");
+    if (lobby?.createdBy === currentUserId) {
+      // Only host can start
+      socket?.emit(SOCKET_EVENTS.COMMON.START_MATCH);
+    }
   };
 
   const handleLeaveLobby = () => {
-    getSocket().disconnect();
+    disconnect();
     router.push("/");
   };
 

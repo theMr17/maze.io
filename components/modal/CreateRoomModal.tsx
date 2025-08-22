@@ -7,7 +7,7 @@ import { GameMode } from "@/types/room";
 import { createRoom, getGameModes } from "@/services/roomService";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/providers/AuthProvider";
-import { initSocket } from "@/lib/socket";
+import { useSocket } from "@/providers/SocketProvider";
 
 interface CreateRoomModalProps {
   isOpen: boolean;
@@ -27,6 +27,7 @@ const CreateRoomModal: React.FC<CreateRoomModalProps> = ({
   );
   const [gameModes, setGameModes] = useState<GameMode[]>([]);
   const [loading, setLoading] = useState(true);
+  const { connectToRoom } = useSocket();
 
   const router = useRouter();
 
@@ -79,7 +80,7 @@ const CreateRoomModal: React.FC<CreateRoomModalProps> = ({
         formState
       );
 
-      initSocket(res.id);
+      connectToRoom(res.id);
 
       const roomCode = res.roomCode;
       router.push(`/lobby?code=${roomCode}`);
