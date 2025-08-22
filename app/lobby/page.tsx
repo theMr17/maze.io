@@ -32,7 +32,7 @@ const Lobby = () => {
       setLobby(data);
     });
 
-    socket.on(SOCKET_EVENTS.COMMON.MAZE_CREATED, (data: RoomInfoPayload) => {
+    socket.on(SOCKET_EVENTS.COMMON.MAZE_CREATED, () => {
       router.push("/play");
     });
 
