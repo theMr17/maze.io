@@ -19,10 +19,7 @@ const CreateRoomModal: React.FC<CreateRoomModalProps> = ({
   onClose,
 }) => {
   const { authData } = useAuth();
-  const [roomName, setRoomName] = useState(() => {
-    const playerName = authData?.name || "Player1";
-    return `${playerName}'s Room`;
-  });
+  const [roomName, setRoomName] = useState("Loading...");
   const [roomType, setRoomType] = useState("Public");
   const [selectedMode, setSelectedMode] = useState<string | null>(null);
   const [formState, setFormState] = useState<Record<string, string | number>>(
@@ -32,6 +29,12 @@ const CreateRoomModal: React.FC<CreateRoomModalProps> = ({
   const [loading, setLoading] = useState(true);
 
   const router = useRouter();
+
+  useEffect(() => {
+    if (authData?.name) {
+      setRoomName(`${authData.name}'s Room`);
+    }
+  }, [authData]);
 
   useEffect(() => {
     const fetchModes = async () => {
